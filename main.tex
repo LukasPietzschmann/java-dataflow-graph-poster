@@ -184,8 +184,7 @@
 				ideally we would keep track of every index that is accessed.
 			\item [Control Structures] We currently only treat \javainline{If-Else}
 				statements correctly. Support for other control structures
-				\hbox{(\oldemph{e.g} loops)} is definitely needed. This shouldn't be hard to
-				add, though.
+				\hbox{(\oldemph{e.g} loops)} is definitely needed.
 		\end{description}
 	\end{minipage}
 	\par\vspace*\fill
@@ -204,11 +203,10 @@
 	The project is developed using \hbox{\emph{Java 17}}. Additionally, we employ \emph{Gradle}
 	(Groovy) as a build and dependency management system.
 	\par
-	The current AlDeSCo-Prototype uses \emph{Spoon} to generate an AST for any given
-	Java source code. We then traverse Spoon's AST in order to build the data flow
-	graph, which is represented by \emph{JGraphT}'s data structures. The actual spanning
-	of the data flow graph is completely done by ourselves without the help of a
-	library.
+	The current AlDeSCo-Prototype uses \emph{Spoon} to parse and analyze any given java
+	source code. We then traverse Spoon's AST in order to build the data flow graph,
+	which is represented by \emph{JGraphT}'s data structures. The actual spanning of the
+	data flow graph is completely done by ourselves without the help of a library.
 
 	\paragraph{QA}
 	In order to assure that no functionality breaks over time, we use a
