@@ -171,8 +171,8 @@
 		\end{mybox}
 
 		\section*{Future Work}
-		While basic cases are already handled well, a variety of situations are handled
-		poorly or not at all. Here are some areas we want to improve in:
+		While basic cases are already handled well, a variety of situations are taken
+		care of poorly or not at all. Here are some areas we want to improve in:
 		\begin{description}
 			\item [Methods] When a method is called, we definitely want to trace the
 				data flow of all arguments through the method. We currently have basic
@@ -182,6 +182,10 @@
 				graph.
 			\item [Arrays] We currently treat arrays as a single \oldemph{thing}. But
 				ideally we would keep track of every index that is accessed.
+			\item [Control Structures] We currently only treat \javainline{If-Else}
+				statements correctly. Support for other control structures
+				\hbox{(\oldemph{e.g} loops)} is definitely needed. This shouldn't be hard to
+				add, though.
 		\end{description}
 	\end{minipage}
 	\par\vspace*\fill
