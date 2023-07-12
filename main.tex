@@ -1,0 +1,225 @@
+\makeatletter
+\newcommand\input@path{{smile/}}
+\makeatother
+
+\documentclass[coloraccent=darkmaroon]{poster}
+
+\title{\gradient{Building a data flow graph for Java}}
+\author{Lukas Pietzschmann, Denis Neumüller, Florian Sihler}
+\uni{Ulm University}
+\institute{Institute of Software Engineering and Programming Languages}
+\date{07/28/2023}
+\logoleft{logos/splogo.png}
+\logoright{logos/uulmlogo.png}
+
+\usepackage{emoji}
+\usepackage{gradient}
+
+\makeatletter
+\newcommand\currentfontsize{\fontsize{\f@size}{\f@baselineskip}\selectfont}
+\makeatother
+\newminted{java}{fontsize=\currentfontsize, numbers=none, frame=none}
+\newmintinline{java}{fontsize=\currentfontsize}
+\newmintinline[bigjava]{java}{fontsize=\large, escapeinside=||}
+\usemintedstyle{stata}
+
+\columnseprule0pt
+\newcommand\gradient[1]{\gradientRGB{#1}{133,29,46}{102,51,77}}
+\newcommand*\circled[1]{\tikz[baseline={([yshift=-1.5pt]char.base)}]{\node[pill, opacity=0.8, inner sep=3pt](char){\small#1};}}
+\let\oldemph\emph
+\renewcommand\emph[1]{\oldemph{\gradient{#1}}}
+
+\tikzstyle{coolgraphnode} = [roundednode, fill=lightgray, draw=none, inner sep=2mm]
+
+\begin{document}
+\maketitle
+\begin{multicols}{3}
+	\begin{mybox}{accent}{}{enhanced, watermark text={\fontspec{Symbola}\symbol{"2615}}, watermark opacity=0.3, height=5.5cm}
+		\begin{javacode*}{escapeinside=||, fontsize=\Large}
+			void foo(int[] arr|\circled{1}|){
+				int len|\circled{2}| = arr|\circled{3}|.length;
+				for(int i = 0; i < len; ++i) {
+					System.out.println(arr[i]);
+				}
+			}
+		\end{javacode*}
+	\end{mybox}%
+	\vspace*\fill%
+	\par\columnbreak%
+	\begin{mybox}{red!75!black}{\centering\Large\bfseries The Problem}{enhanced, watermark tikz={\draw[line width=2mm] circle (1cm)
+		node{\fontsize{20mm}{20mm}\selectfont?};}, watermark opacity=0.3, height=5.5cm, split=0.382, valign=center, valign lower=center}
+		\centering\Large Is \javainline{len} dependent on \javainline{arr}?
+		\tcblower
+		\Large Yes, because there's a path between \javainline{int len} \tikz[baseline={([yshift=-0.5pt]char.base)}]{\node[pill, opacity=0.8, inner sep=3pt](char){2};} and
+		\javainline{int[] arr} \tikz[baseline={([yshift=-0.5pt]char.base)}]{\node[pill, opacity=0.8, inner sep=3pt](char){1};}.
+	\end{mybox}
+	\vspace*\fill
+	\par\columnbreak
+	\begin{mybox}{accent}{}{enhanced, watermark tikz={\draw[line width=2mm] circle (1cm)
+		node{\fontsize{20mm}{20mm}\selectfont !};}, watermark opacity=0.3, height=5.5cm}
+		\centering
+		\savebox0{\bigjava{int[] arr}}
+		\begin{tikzpicture}
+			\node [coolgraphnode] (fa) [] {\usebox0};
+			\node [coolgraphnode] (ar) [below=of fa] {\bigjava{arr.length}};
+			\node [coolgraphnode] (fl) [left=of ar, xshift=-1.5cm] {\bigjava{int len}};
+			\begin{scope}[opacity=0.3]
+				\node [coolgraphnode] (lr) [below=of fl] {\bigjava{len}};
+				\node [coolgraphnode] (lol) [below=of ar] {\bigjava{arr[i]}};
+			\end{scope}
+
+			\begin{scope}[opacity=0.8]
+				\node [pill] at (fa.north east) {\small1};
+				\node [pill] at (fl.north east) {\small2};
+				\node [pill] at (ar.north east) {\small3};
+			\end{scope}
+
+			\draw [arrow] (ar) to node [anchor=west, color=darkgray] {read from} (fa);
+			\draw [arrow, opacity=0.3] (lr) to node [anchor=west, color=darkgray, opacity=0.3] {read from} (fl);
+			\draw [arrow] (fl) to node [midway, above, sloped, color=darkgray] {defined by} (ar);
+			\draw [arrow, opacity=0.3] (lol) to [out=5, in=-5] node [midway, below, sloped, color=darkgray, opacity=0.3] {read from} (fa);
+		\end{tikzpicture}
+	\end{mybox}%
+	\vspace*\fill%
+\end{multicols}
+
+\begin{multicols}{4}
+	\section*{The Algorithm}
+	We keep a set of declarations whose data flow we are interested in --- the \emph{active
+	set}. When traversing the AST, we look at every piece of code, but we're especially
+	interested in
+	\begin{enumerate*}
+		\item variables and
+		\item assignments,
+	\end{enumerate*}
+	as they influence the data flow.
+	\par
+	For every variable we encounter, we get its declaration and add it to the active
+	set\footnote{If an element is already active the set will kindly reject it.}.
+	Additionally, we create a new node inside the graph. This node can have one of two
+	types: \emph{Def}, if the element is a declaration or on the left hand side of an
+	assignment and \emph{Use}, otherwise.
+	\par
+	Now we can hook up the newly added node. For this purpose we get all recently added
+	elements that \emph{share a declaration} with the current element. We then connect
+	the newly added node to all recently added nodes, only \emph{omitting Use -> Use}
+	edges.
+	\par
+	Assignments are already largely handled by the rules above. Variables on the left
+	and right hand side are correctly inserted, we just have to connect the assignee to
+	elements in the assignment. This is done by getting all active elements from the
+	right hand side and drawing an edge from the \emph{left hand side to them}.
+	\par
+	The types of two nodes alone lets us infer the type of the edge connecting them. We
+	distinguish between three edge types: \emph{Read From}
+	(\javainline{Use}~$\rightarrow$~\javainline{Def}), \emph{Defined By}
+	(\javainline{Def}~$\rightarrow$~\javainline{Use}), and \emph{Occurrence}
+	(\javainline{Def}~$\rightarrow$~\javainline{Def}).
+	\par
+	Getting the data flow to, from, or between elements can now be narrowed down to a
+	\emph{graph reachability problem}.
+	\begin{description}
+		\item [to] We return all elements that can reach the given element.
+		\item [from] We return all elements that can reached by the given element.
+		\item [between] We return all paths between two elements.
+	\end{description}
+	\vspace*\fill
+	\columnbreak
+
+	\begin{minipage}{\dimexpr2\columnwidth+\columnsep}
+		\section*{An Example}
+		\begin{mybox}{accent}{}{sidebyside, sidebyside align=center}
+			\begin{javacode*}{fontsize=\large}
+				public int foo(int n, int i) {
+					a = n + 5;
+					if(Math.random() > 0.5) {
+						a = i;
+					} else {
+						a = a + 2;
+					}
+					return a;
+				}
+			\end{javacode*}
+			\tcblower
+			\begin{tikzpicture}
+				\node [coolgraphnode] (at) [] {\bigjava{|\textbf{a}| = i}};
+				\node [coolgraphnode] (ao) [right=of at, xshift=1.5cm] {\bigjava{|\textbf{a}| = n + 5}};
+
+				\node [coolgraphnode] (n) [above=of ao] {\bigjava{|\phantom{i}\llap{a}| = |\textbf{n}| + 5}};
+				\node [coolgraphnode] (i) [above=of at] {\bigjava{a = |\textbf{i}|}};
+
+				\node [coolgraphnode] (intn) [above=of n] {\bigjava{int n}};
+				\node [coolgraphnode] (inti) [above=of i] {\bigjava{int i}};
+
+				\node [coolgraphnode] (ar) [below=of ao] {\bigjava{a = |\textbf{a}| + 2}};
+
+				\node [coolgraphnode] (ae) [below=of ar] {\bigjava{|\textbf{a}| = a + 2}};
+
+				\node [coolgraphnode] (ra) [below=of ae] {\bigjava{return a}};
+
+				\draw [arrow] (ra) to node [anchor=west, color=darkgray] {read from} (ae);
+				\draw [arrow] (ra) to [out=180, in=-90] node [near end, sloped, below, color=darkgray] {read from} (at);
+				\draw [arrow] (at) to node [anchor=west, color=darkgray] {defined by} (i);
+				\draw [arrow] (i) to node [anchor=west, color=darkgray] {read from} (inti);
+				\draw [arrow] (at) to node [anchor=south, color=darkgray] {occurrence} (ao);
+				\draw [arrow] (ae) to node [anchor=east, color=darkgray] {defined by} (ar);
+				\draw [arrow] (ae) to [in=0, out=0] node [midway, sloped, below, color=darkgray] {occurrence} (ao);
+				\draw [arrow] (ar) to node [anchor=east, color=darkgray] {read from} (ao);
+				\draw [arrow] (ao) to node [anchor=west, color=darkgray] {defined by} (n);
+				\draw [arrow] (n) to node [anchor=west, color=darkgray] {read from} (intn);
+			\end{tikzpicture}
+		\end{mybox}
+
+		\section*{Future Work}
+		While basic cases are already handled well, a variety of situations are handled
+		poorly or not at all. Here are some areas we want to improve in:
+		\begin{description}
+			\item [Methods] When a method is called, we definitely want to trace the
+				data flow of all arguments through the method. We currently have basic
+				support for this, but work still needs to be put into it.
+			\item [Recursion] If a method calls itself, either directly or indirectly,
+				we need to recognize this when generating and traversing the data flow
+				graph.
+			\item [Arrays] We currently treat arrays as a single \oldemph{thing}. But
+				ideally we would keep track of every index that is accessed.
+		\end{description}
+	\end{minipage}
+	\par\vspace*\fill
+	\columnbreak
+	\null
+	\columnbreak
+
+	\section*{Project Organization}
+	\paragraph{Organization}
+	We're doing \emph{weekly meetings} to review the current progress, discuss decisions
+	and / or potential issues, and prioritize and schedule future work. If important
+	decisions were made in our meeting, we record them in a \emph{wiki} so that we can
+	still understand later why we decided the way we did.
+
+	\paragraph{Technology Stack}
+	The project is developed using \hbox{\emph{Java 17}}. Additionally, we employ \emph{Gradle}
+	(Groovy) as a build and dependency management system.
+	\par
+	The current AlDeSCo-Prototype uses \emph{Spoon} to generate an AST for any given
+	Java source code. We then traverse Spoon's AST in order to build the data flow
+	graph, which is represented by \emph{JGraphT}'s data structures. The actual spanning
+	of the data flow graph is completely done by ourselves without the help of a
+	library.
+
+	\paragraph{QA}
+	In order to assure that no functionality breaks over time, we use a
+	small\footnote{Only the test suite targeting the data flow is currently kinda small.
+	AlDeSCo's main test suite contains $\approx$ 470 tests.} but --- hopefully
+	\emoji{wink} --- expanding \emph{test suite}.
+	\par
+	To ensure the employment of best practices, we often \emph{review} newly added code
+	in our weekly meetings. This massively helps in keeping the code easy to understand
+	and well readable. However, if we overlook a small error, it will most likely be
+	caught by TeamScale, our \emph{static code analysis} platform.
+
+	\paragraph{Documentation}
+	The above mentioned GitLab \emph{wikis} are not only used for meeting protocols, but
+	also to document important aspects of the code. However, most of our documentation
+	is written inline using the \emph{JavaDoc} syntax.
+\end{multicols}
+\end{document}
