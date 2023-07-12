@@ -1,5 +1,8 @@
 # 2023-07-28 Zwischenmesse Poster
 
+## Clone the repo
+Don't forget to clone recursively!
+
 ## Compile the poster
 To make the java code look nice, I _customized_ [pygments's `stata_light` style](https://pygments.org/styles/)
 a bit. For this to work, you have to replace the original `stata_light.py` file with the one provided in this
