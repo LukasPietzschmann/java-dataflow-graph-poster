@@ -58,9 +58,8 @@
 	\begin{mybox}{accent}{}{enhanced, watermark tikz={\draw[line width=2mm] circle (1cm)
 		node{\fontsize{20mm}{20mm}\selectfont !};}, watermark opacity=0.3, height=5.5cm}
 		\centering
-		\savebox0{\bigjava{int[] arr}}
 		\begin{tikzpicture}
-			\node [coolgraphnode] (fa) [] {\usebox0};
+			\node [coolgraphnode] (fa) [] {\bigjava{int[] arr}};
 			\node [coolgraphnode] (ar) [below=of fa] {\bigjava{arr.length}};
 			\node [coolgraphnode] (fl) [left=of ar, xshift=-1.5cm] {\bigjava{int len}};
 			\begin{scope}[opacity=0.3]
@@ -77,7 +76,8 @@
 			\draw [arrow] (ar) to node [anchor=west, color=darkgray] {read from} (fa);
 			\draw [arrow, opacity=0.3] (lr) to node [anchor=west, color=darkgray, opacity=0.3] {read from} (fl);
 			\draw [arrow] (fl) to node [midway, above, sloped, color=darkgray] {defined by} (ar);
-			\draw [arrow, opacity=0.3] (lol) to [out=5, in=-5] node [midway, below, sloped, color=darkgray, opacity=0.3] {read from} (fa);
+			\draw [arrow, opacity=0.3] (lol) to [out=5, in=-5] node [midway, below,
+			sloped, color=darkgray, opacity=0.3, rotate=6] {read from} (fa);
 		\end{tikzpicture}
 	\end{mybox}%
 	\vspace*\fill%
@@ -107,8 +107,8 @@
 	\par
 	Assignments are already largely handled by the rules above. Variables on the left
 	and right hand side are correctly inserted, we just have to connect the assignee to
-	elements in the assignment. This is done by getting all active elements from the
-	right hand side and drawing an edge from the \emph{left hand side to them}.
+	active elements in the assignment. This is done by getting all active elements from
+	the right hand side and drawing an edge from the \emph{left hand side to them}.
 	\par
 	The types of two nodes alone lets us infer the type of the edge connecting them. We
 	distinguish between three edge types: \emph{Read From}
@@ -119,8 +119,8 @@
 	Getting the data flow to, from, or between elements can now be narrowed down to a
 	\emph{graph reachability problem}.
 	\begin{description}
-		\item [to] We return all elements that can reach the given element.
-		\item [from] We return all elements that can reached by the given element.
+		\item [to] We return all elements that can be reached from the given element.
+		\item [from] We return all elements that can reach the given element.
 		\item [between] We return all paths between two elements.
 	\end{description}
 	\vspace*\fill
@@ -177,11 +177,11 @@
 			\item [Methods] When a method is called, we definitely want to trace the
 				data flow of all arguments through the method. We currently have basic
 				support for this, but work still needs to be put into it.
-			\item [Recursion] If a method calls itself, either directly or indirectly,
-				we need to recognize this when generating and traversing the data flow
-				graph.
-			\item [Arrays] We currently treat arrays as a single \oldemph{thing}. But
-				ideally we would keep track of every index that is accessed.
+			\item [Recursion] If a method calls itself --- either directly or indirectly
+				--- we need to recognize this when generating and traversing the data
+				flow graph.
+			\item [Arrays] We currently treat arrays as a single \oldemph{thing}.
+				Ideally we would keep track of every index that is accessed.
 			\item [Control Structures] We currently only treat \javainline{If-Else}
 				statements correctly. Support for other control structures
 				\hbox{(\oldemph{e.g} loops)} is definitely needed.
@@ -203,7 +203,7 @@
 	The project is developed using \hbox{\emph{Java 17}}. Additionally, we employ \emph{Gradle}
 	(Groovy) as a build and dependency management system.
 	\par
-	The current AlDeSCo-Prototype uses \emph{Spoon} to parse and analyze any given java
+	The current AlDeSCo-Prototype uses \emph{Spoon} to parse and analyze any given Java
 	source code. We then traverse Spoon's AST in order to build the data flow graph,
 	which is represented by \emph{JGraphT}'s data structures. The actual spanning of the
 	data flow graph is completely done by ourselves without the help of a library.
