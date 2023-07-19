@@ -131,7 +131,7 @@
 		\begin{mybox}{accent}{}{sidebyside, sidebyside align=center}
 			\begin{javacode*}{fontsize=\large}
 				public int foo(int n, int i) {
-					a = n + 5;
+					int a = n + 5;
 					if(Math.random() > 0.5) {
 						a = i;
 					} else {
@@ -143,9 +143,10 @@
 			\tcblower
 			\begin{tikzpicture}
 				\node [coolgraphnode] (at) [] {\bigjava{|\textbf{a}| = i}};
-				\node [coolgraphnode] (ao) [right=of at, xshift=1.5cm] {\bigjava{|\textbf{a}| = n + 5}};
+				\node [coolgraphnode] (ao) [right=of at, xshift=1.3cm]
+				{\bigjava{int |\textbf{a}| = n + 5}};
 
-				\node [coolgraphnode] (n) [above=of ao] {\bigjava{|\phantom{i}\llap{a}| = |\textbf{n}| + 5}};
+				\node [coolgraphnode] (n) [above=of ao] {\bigjava{int |\phantom{i}\llap{a}| = |\textbf{n}| + 5}};
 				\node [coolgraphnode] (i) [above=of at] {\bigjava{a = |\textbf{i}|}};
 
 				\node [coolgraphnode] (intn) [above=of n] {\bigjava{int n}};
@@ -163,7 +164,8 @@
 				\draw [arrow] (i) to node [anchor=west, color=darkgray] {read from} (inti);
 				\draw [arrow] (at) to node [anchor=south, color=darkgray] {occurrence} (ao);
 				\draw [arrow] (ae) to node [anchor=east, color=darkgray] {defined by} (ar);
-				\draw [arrow] (ae) to [in=0, out=0] node [midway, sloped, below, color=darkgray] {occurrence} (ao);
+				\draw [arrow] (ae.north east) to [in=-45, out=45] node [pos=0.6,
+				rotate=14, below, color=darkgray, rotate=76] {occurrence} (ao.south east);
 				\draw [arrow] (ar) to node [anchor=east, color=darkgray] {read from} (ao);
 				\draw [arrow] (ao) to node [anchor=west, color=darkgray] {defined by} (n);
 				\draw [arrow] (n) to node [anchor=west, color=darkgray] {read from} (intn);
