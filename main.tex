@@ -111,18 +111,20 @@
 	the right hand side and drawing an edge from the \emph{left hand side to them}.
 	\par
 	The types of two nodes alone lets us infer the type of the edge connecting them. We
-	distinguish between three edge types: \emph{Read From}
-	(\javainline{Use}~$\rightarrow$~\javainline{Def}), \emph{Defined By}
-	(\javainline{Def}~$\rightarrow$~\javainline{Use}), and \emph{Occurrence}
-	(\javainline{Def}~$\rightarrow$~\javainline{Def}).
+	distinguish between three edge types:
+	\begin{enumerate*}
+		\item \emph{Read From}: \javainline{Use}~$\rightarrow$~\javainline{Def},
+		\item \emph{Defined By}: \javainline{Def}~$\rightarrow$~\javainline{Use}, and
+		\item \emph{Occurrence}: \javainline{Def}~$\rightarrow$~\javainline{Def}.
+	\end{enumerate*}
 	\par
-	Getting the data flow to, from, or between elements can now be narrowed down to a
+	Getting the data flow to, from, or between elements can be narrowed down to a
 	\emph{graph reachability problem}.
-	\begin{description}
-		\item [to] We return all elements that can be reached from the given element.
-		\item [from] We return all elements that can reach the given element.
-		\item [between] We return all paths between two elements.
-	\end{description}
+	\begin{enumerate*}
+		\item \emph{To}: We return all elements that can be reached from the given element.
+		\item \emph{From}: We return all elements that can reach the given element.
+		\item \emph{Between}: We return all paths between two elements.
+	\end{enumerate*}
 	\vspace*\fill
 	\columnbreak
 
