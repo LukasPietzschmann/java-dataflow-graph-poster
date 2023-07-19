@@ -120,11 +120,11 @@
 	\fcolorbox{accent}{accent!10}{%
 		\begin{minipage}[b]{\paperwidth}%
 			\textcolor{accent}{\hrule height \smile@linewidth\relax}
-			\vspace*{1ex}%
+			\vspace*{0.5ex}%
 			\hspace\poster@margin%
 			\@date\hfill\@institute\hfill\@uni%
 			\hspace\poster@margin%
-			\vspace*{1ex}%
+			\vspace*{0.5ex}%
 		\end{minipage}
 	}
 	\endgroup%
@@ -143,7 +143,7 @@
 
 \RequirePackage[inline]{enumitem}
 \setlist[enumerate]{itemsep=-0.5\parskip, label=(\arabic*)}
-\setlist[itemize]{itemsep=-0.5\parskip}
+\setlist[itemize]{label=\textcolor{accent}{\fullcirc}, itemsep=-0.5\parskip}
 \setlist[description]{style=sameline, labelsep=0.5em, itemsep=\dimexpr-\itemsep-\parsep, font=\color{accent}}
 
 
