@@ -96,13 +96,18 @@
 	For every variable we encounter, we get its declaration and add it to the active
 	set\footnote{If an element is already active the set will kindly reject it.}.
 	Additionally, we create a new node inside the graph. This node can have one of two
-	types: \emph{Def}, if the element is a declaration or on the left hand side of an
-	assignment and \emph{Use}, otherwise.
+	types:
+	\begin{enumerate*}
+		\item \emph{Def}: if the element is a declaration or on the left hand side of an
+			assignment and
+		\item \emph{Use}: otherwise.
+	\end{enumerate*}
 	\par
 	Now we can hook up the newly added node. For this purpose we get all recently added
-	elements that \emph{share a declaration} with the current element. We then connect
-	the newly added node to all recently added nodes, only \emph{omitting Use -> Use}
-	edges.
+	elements that \emph{share a declaration} with the current element ---
+	\oldemph{e.g.}~in the figure on the right all \javainline{a}'s share a
+	declaration. We then connect the newly added node to all recently added nodes, only
+	\emph{omitting Use -> Use} edges.
 	\par
 	Assignments are already largely handled by the rules above. Variables on the left
 	and right hand side are correctly inserted, we just have to connect the assignee to
@@ -187,7 +192,7 @@
 				Ideally we would keep track of every index that is accessed.
 			\item [Control Structures] We currently only treat \javainline{If-Else}
 				statements correctly. Support for other control structures
-				\hbox{(\oldemph{e.g} loops)} is definitely needed.
+				\hbox{(\oldemph{e.g.}~loops)} is definitely needed.
 		\end{description}
 	\end{minipage}
 	\par\vspace*\fill
