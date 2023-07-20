@@ -91,28 +91,28 @@
 		\item variables and
 		\item assignments,
 	\end{enumerate*}
-	as they influence the data flow.
+	as they primarily influence the data flow.
 	\par
 	For every variable we encounter, we get its declaration and add it to the active
-	set\footnote{If an element is already active the set will kindly reject it.}.
+	set\footnote{If an element is already active, the set will kindly reject it.}.
 	Additionally, we create a new node inside the graph. This node can have one of two
 	types:
 	\begin{enumerate*}
-		\item \emph{Def}: if the element is a declaration or on the left hand side of an
+		\item \emph{Def}, if the element is a declaration or on the left-hand side of an
 			assignment and
-		\item \emph{Use}: otherwise.
+		\item \emph{Use}, otherwise.
 	\end{enumerate*}
 	\par
-	Now we can hook up the newly added node. For this purpose we get all recently added
+	Now we can hook up the newly added node. For this purpose, we get all recently added
 	elements that \emph{share a declaration} with the current element ---
-	\oldemph{e.g.}~in the figure on the right all \javainline{a}'s share a
+	\oldemph{e.g.}~in the figure on the right, all \javainline{a}'s share a
 	declaration. We then connect the newly added node to all recently added nodes, only
 	\emph{omitting Use -> Use} edges.
 	\par
 	Assignments are already largely handled by the rules above. Variables on the left
-	and right hand side are correctly inserted, we just have to connect the assignee to
+	and right-hand side are correctly inserted, we just have to connect the assignee to
 	active elements in the assignment. This is done by getting all active elements from
-	the right hand side and drawing an edge from the \emph{left hand side to them}.
+	the right-hand side and drawing an edge from the \emph{left-hand side to them}.
 	\par
 	The types of two nodes alone lets us infer the type of the edge connecting them. We
 	distinguish between three edge types:
@@ -189,7 +189,7 @@
 				--- we need to recognize this when generating and traversing the data
 				flow graph.
 			\item [Arrays] We currently treat arrays as a single \oldemph{thing}.
-				Ideally we would keep track of every index that is accessed.
+				Ideally, we would keep track of every index that is accessed.
 			\item [Control Structures] We currently only treat \javainline{If-Else}
 				statements correctly. Support for other control structures
 				\hbox{(\oldemph{e.g.}~loops)} is definitely needed.
@@ -219,8 +219,8 @@
 	\paragraph{QA}
 	In order to assure that no functionality breaks over time, we use a
 	small\footnote{Only the test suite targeting the data flow is currently kinda small.
-	AlDeSCo's main test suite contains $\approx$ 470 tests.} but --- hopefully
-	\emoji{wink} --- expanding \emph{test suite}.
+	AlDeSCo's main test suite contains $\approx$ 470 tests.} but (hopefully
+	\emoji{wink}) expanding \emph{test suite}.
 	\par
 	To ensure the employment of best practices, we often \emph{review} newly added code
 	in our weekly meetings. This massively helps in keeping the code easy to understand
@@ -231,7 +231,7 @@
 	with the actual execution of the code.
 
 	\paragraph{Documentation}
-	The above mentioned GitLab \emph{wikis} are not only used for meeting protocols, but
+	The above-mentioned GitLab \emph{wikis} are not only used for meeting protocols, but
 	also to document important aspects of the code. However, most of our documentation
 	is written inline using the \emph{JavaDoc} syntax.
 \end{multicols}
