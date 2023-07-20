@@ -162,7 +162,7 @@
 
 				\node [coolgraphnode] (ae) [below=of ar] {\bigjava{|\textbf{a}| = a + 2}};
 
-				\node [coolgraphnode] (ra) [below=of ae] {\bigjava{return a}};
+				\node [coolgraphnode] (ra) [below=of ae] {\bigjava{return |\textbf{a}|}};
 
 				\draw [arrow] (ra) to node [anchor=west, color=darkgray] {read from} (ae);
 				\draw [arrow] (ra) to [out=180, in=-90] node [near end, sloped, below, color=darkgray] {read from} (at);
