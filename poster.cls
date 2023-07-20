@@ -54,6 +54,9 @@
 \RequirePackage[skip=0.5\baselineskip, indent=\z@]{parskip}
 \RequirePackage[tracking, expansion, babel]{microtype}
 
+\RequirePackage{etoolbox}
+\patchcmd\paragraph{3.25ex \@plus1ex \@minus.2ex}{\the\parskip plus 1ex minus .5ex}
+{\typeout{Patching paragraph worked}}{\ClassWarning{poster}{Patching paragraph did not work}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
