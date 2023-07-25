@@ -34,7 +34,10 @@
 
 \addtolength{\skip\footins}{-1ex}
 
+\usepackage{pgfpages}
+
 \begin{document}
+\pgfpagesuselayout{resize to}[a1paper, landscape]
 \maketitle
 \begin{multicols}{3}
 	\begin{mybox}{accent}{}{enhanced, watermark text={\fontspec{Symbola}\symbol{"2615}}, watermark opacity=0.3, height=5.5cm}
