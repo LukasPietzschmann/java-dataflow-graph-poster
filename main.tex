@@ -71,11 +71,9 @@
 				\node [coolgraphnode] (lol) [below=of ar] {\bigjava{arr[i]}};
 			\end{scope}
 
-			\begin{scope}[opacity=0.8]
-				\node [pill] at (fa.north east) {\small1};
-				\node [pill] at (fl.north east) {\small2};
-				\node [pill] at (ar.north east) {\small3};
-			\end{scope}
+			\node [pill] at (fa.north east) {\small1};
+			\node [pill] at (fl.north east) {\small2};
+			\node [pill] at (ar.north east) {\small3};
 
 			\draw [arrow] (ar) to node [anchor=west, color=darkgray] {read from} (fa);
 			\draw [arrow, opacity=0.3] (lr) to node [anchor=west, color=darkgray, opacity=0.3] {read from} (fl);
