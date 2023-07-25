@@ -14,6 +14,7 @@
 
 \usepackage{emoji}
 \usepackage{gradient}
+\usepackage{textcomp}
 
 \makeatletter
 \newcommand\currentfontsize{\fontsize{\f@size}{\f@baselineskip}\selectfont}
@@ -117,9 +118,9 @@
 	The types of two nodes alone lets us infer the type of the edge connecting them. We
 	distinguish between three edge types:
 	\begin{enumerate*}
-		\item \emph{Read From}: \javainline{Use}~$\rightarrow$~\javainline{Def},
-		\item \emph{Defined By}: \javainline{Def}~$\rightarrow$~\javainline{Use}, and
-		\item \emph{Occurrence}: \javainline{Def}~$\rightarrow$~\javainline{Def}.
+		\item \emph{Read From}: \javainline{Use}~\textrightarrow~\javainline{Def},
+		\item \emph{Defined By}: \javainline{Def}~\textrightarrow~\javainline{Use}, and
+		\item \emph{Occurrence}: \javainline{Def}~\textrightarrow~\javainline{Def}.
 	\end{enumerate*}
 	\par
 	Getting the data flow to, from, or between elements can be narrowed down to a
