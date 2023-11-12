@@ -9,3 +9,5 @@ a bit. For this to work, you have to replace the original `stata_light.py` file 
 repo. On my machine the original file was located in `~/.local/lib/python3.11/site-packages/pygments/styles/`.
 
 If you've done this, you can just run `latexmk main.tex`.
+
+If you don't want to build the poster yourself, you can also download it [here](https://github.com/LukasPietzschmann/java-dataflow-grap-poster/files/13328099/poster.pdf).
