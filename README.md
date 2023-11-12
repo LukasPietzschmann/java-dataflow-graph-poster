@@ -1,4 +1,4 @@
-# 2023-07-28 Zwischenmesse Poster
+# Building a dataflow graph for java
 
 ## Clone the repo
 Don't forget to clone recursively!
@@ -8,4 +8,4 @@ To make the java code look nice, I _customized_ [pygments's `stata_light` style]
 a bit. For this to work, you have to replace the original `stata_light.py` file with the one provided in this
 repo. On my machine the original file was located in `~/.local/lib/python3.11/site-packages/pygments/styles/`.
 
-If you've done this, you can just run `latexmk`.
+If you've done this, you can just run `latexmk main.tex`.
